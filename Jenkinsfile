@@ -1,24 +1,9 @@
-sh 'docker run -d -p 8081:80 employee-form'
-pipeline {
-  agent any
+def isWindows = isUnix() == false
 
-  stages {
-    stage('Clone Repo') {
-      steps {
-        git 'https://github.com/your-username/employee-form.git'
-      }
-    }
-
-    stage('Build Docker Image') {
-      steps {
-        sh 'docker build -t employee-form .'
-      }
-    }
-
-    stage('Run Docker Container') {
-      steps {
-        sh 'docker run -d -p 8080:80 employee-form'
-      }
-    }
-  }
+if (isWindows) {
+    bat 'docker stop employee-form || exit 0'
+    bat 'docker rm employee-form || exit 0'
+} else {
+    sh 'docker stop employee-form || true'
+    sh 'docker rm employee-form || true'
 }
